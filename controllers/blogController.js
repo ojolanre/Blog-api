@@ -88,5 +88,60 @@ const getUserBlogs = async (req, res) => {
      }
  };
 
-module.exports = {createBlog,  getPublishedBlogs, getBlogById, getUserBlogs };
+ const updateBlog = async (req, res) => {
+    try {
+        const { blogId } = req.params;
+        const { title, description, tags, body, state } = req.body;
+        const userId = req.user.userId; // get id from authentication middleware
+        const blog = await Blog.findById(blogId);
+         if (!blog) {
+           return res.status(404).json({ message: 'Blog not found' });
+        }
+       if (blog.author.toString() !== userId){
+           return res.status(403).json({message: "You do not have permissions to perform this operation"})
+        }
+        if (state && blog.author.toString() !== userId){
+            return res.status(403).json({message: "You do not have permissions to update the state of the blog post"})
+        }
 
+        // Update blog with new data
+        blog.title = title ?? blog.title
+        blog.description = description ?? blog.description
+        blog.tags = tags ?? blog.tags
+         blog.body = body ?? blog.body
+        blog.state = state ?? blog.state
+          await blog.save()
+
+        res.status(200).json({message: 'Blog updated successfully', blog});
+    } catch (error) {
+       res.status(500).json({ message: 'Error updating blog', error: error.message });
+     }
+};
+
+const deleteBlog = async (req, res) => {
+    try {
+          const { blogId } = req.params;
+        const userId = req.user.userId; // get id from authentication middleware
+         const blog = await Blog.findById(blogId);
+         if (!blog) {
+             return res.status(404).json({ message: 'Blog not found' });
+         }
+        if (blog.author.toString() !== userId){
+          return res.status(403).json({message: "You do not have permissions to perform this operation"})
+         }
+        await Blog.findByIdAndDelete(blogId);
+
+        res.status(200).json({ message: 'Blog deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting blog', error: error.message });
+    }
+};
+
+module.exports = {
+    createBlog,
+    getPublishedBlogs,
+    getBlogById,
+    updateBlog,
+    deleteBlog,
+    getUserBlogs
+};
