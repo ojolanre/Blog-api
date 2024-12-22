@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to My Blog API</title>
+</head>
+<body>
+    <h1>Welcome to My Blog API</h1>
+    <p>This is a simple blog API, please check the docs for information on how to use the API</p>
+    <a href="/auth/signup">Sign Up</a> |
+    <a href="/auth/signin">Sign In</a>
+
+    <% if (user) { %>
+        <p>Logged in as: <%= user.email %></p>
+       <a href="/blogs/create">Create Blog Post</a>
+        <a href="/blogs/user">My Blog Posts</a>
+    <% } %>
+    <h2>Published Blog Posts</h2>
+    <ul>
+        <% if(blogs && blogs.length > 0){%>
+          <% blogs.forEach(blog => { %>
+          <li>
+           <h3><a href="/blogs/<%= blog._id %>"><%= blog.title %></a></h3>
+              <p><%= blog.description %></p>
+          </li>
+            <% }) %>
+        <% } else {%>
+        <p>There are no blogs available</p>
+        <% }%>
+    </ul>
+
+</body>
+</html>
