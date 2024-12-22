@@ -54,7 +54,8 @@ const getPublishedBlogs = async (req, res) => {
               path: 'author',
               select: 'first_name last_name email',
            });
-       res.status(200).json(blogs);
+           res.render('index', { blogs, user: req.user }) 
+      //  res.status(200).json(blogs);
       } catch (error) {
          res.status(500).json({ message: 'Error getting blogs', error: error.message });
     }
@@ -72,7 +73,8 @@ const getPublishedBlogs = async (req, res) => {
           }
        blog.read_count += 1; // Increment read count
        await blog.save();
-     res.status(200).json(blog);
+       res.render('blog', { blog });
+    //  res.status(200).json(blog);
       } catch (error) {
          res.status(500).json({ message: 'Error getting blog', error: error.message });
      }
@@ -82,7 +84,8 @@ const getUserBlogs = async (req, res) => {
      try{
        const author = req.user.userId; //get user id from auth middleware
        const blogs = await Blog.find({author});
-      res.status(200).json(blogs);
+       res.render('userBlogs', { blogs })
+      // res.status(200).json(blogs);
      }catch (error){
       res.status(500).json({message: "Error getting user's blog", error: error.message})
      }
@@ -137,11 +140,39 @@ const deleteBlog = async (req, res) => {
     }
 };
 
+const renderHomePage = async (req, res) => {
+  try{
+     const token = req.headers.authorization?.split(' ')[1] //get token
+      let user;
+      if (token) {
+          try{
+             const decoded = jwt.verify(token, process.env.JWT_SECRET)
+               user = decoded
+         } catch(err){
+           }
+     }
+ //get all the published blogs
+    const blogs = await Blog.find({state: 'published'}).populate({
+     path: 'author',
+      select: 'first_name last_name email',
+   });
+  res.render('index', { blogs, user})
+ }catch(error){
+   console.log(error)
+     res.status(500).json({message: "Error", error: error.message})
+ }
+}
+
+const renderCreateBlogPage = (req, res) => {
+  res.render('createBlog')
+};
 module.exports = {
-    createBlog,
-    getPublishedBlogs,
-    getBlogById,
-    updateBlog,
-    deleteBlog,
-    getUserBlogs
+ createBlog,
+  getPublishedBlogs,
+getBlogById,
+updateBlog,
+deleteBlog,
+ getUserBlogs,
+renderHomePage,
+renderCreateBlogPage
 };
