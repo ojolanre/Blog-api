@@ -1,5 +1,6 @@
 const express = require("express");
 require("dotenv").config() //loads environment variables from .env file
+const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db')
 const userRoutes = require('./routes/userRoutes')
 const blogRoutes = require('./routes/blogRoutes')
@@ -14,6 +15,7 @@ connectDB.connectToMongoDB()
 
 
 //middleware
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use('/auth', userRoutes)
@@ -50,3 +52,6 @@ app.get('/', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server started on PORT: http://localhost:${PORT}`)
 })
+
+//export the app instance
+module.exports = app;

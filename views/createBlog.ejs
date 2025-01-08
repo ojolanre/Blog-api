@@ -7,9 +7,9 @@
 </head>
 <body>
     <h1>Create Blog Post</h1>
-     <% if (error) { %>
+    <% if (typeof error !== 'undefined' && error) { %>
         <p style="color: red;"><%= error %></p>
-     <% } %>
+    <% } %>    
     <form action="/blogs" method="post">
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title" required><br>

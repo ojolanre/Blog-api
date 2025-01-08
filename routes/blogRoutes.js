@@ -7,13 +7,12 @@ const { createBlog, getPublishedBlogs, getBlogById, updateBlog, deleteBlog, getU
 router.use(express.json());
 router.post('/', authenticate, createBlog);
 router.get('/', renderHomePage);
-router.get('/', getPublishedBlogs);
+// router.get('/', getPublishedBlogs);
 router.get('/user', authenticate, getUserBlogs)
 router.get('/create', authenticate, renderCreateBlogPage);
 router.get('/:blogId', getBlogById);
 router.patch('/:blogId', authenticate, updateBlog);
 router.put('/:blogId', authenticate, updateBlog);
 router.delete('/:blogId', authenticate, deleteBlog);
-
 
 module.exports = router;
