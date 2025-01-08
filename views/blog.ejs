@@ -11,6 +11,12 @@
     <p><%= blog.description %></p>
     <p>Tags: <%= blog.tags.join(', ') %></p>
     <p><%= blog.body %></p>
-      <a href="/">Home</a>
+    <p>State: <%= blog.state %></p>
+    <a href="/blogs/user">My Page</a>
+    <form action="/blogs/<%= blog._id %>" method="put" style="display: inline;">
+        <input type="hidden" name="state" value="published">
+        <button type="submit">Publish</button>
+    </form>
+    
 </body>
 </html>

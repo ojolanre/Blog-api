@@ -21,9 +21,9 @@ try {
 
      await newBlog.save();
 
-     res.status(201).json(newBlog);
+     res.redirect(`/blogs/${newBlog._id}`);
      } catch (error) {
-     res.status(500).json({ message: 'Error creating blog', error: error.message });
+     res.status(500).render('createBlog', { error: 'Failed to create blog' });
      }
    };
 
@@ -164,8 +164,10 @@ const renderHomePage = async (req, res) => {
 }
 
 const renderCreateBlogPage = (req, res) => {
-  res.render('createBlog')
+  res.render('createBlog', { error: null })
 };
+
+
 module.exports = {
  createBlog,
   getPublishedBlogs,
